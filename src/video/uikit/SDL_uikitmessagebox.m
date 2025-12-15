@@ -99,7 +99,15 @@ static BOOL UIKit_ShowMessageBoxAlertController(const SDL_MessageBoxData *messag
     }
 
     if (window == nil || window.rootViewController == nil) {
-        alertwindow = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
+        if (@available(iOS 13.0, tvOS 13.0, *)) {
+            UIWindowScene *scene = UIKit_GetActiveWindowScene();
+            if (scene) {
+                alertwindow = [[UIWindow alloc] initWithWindowScene:scene];
+            }
+        }
+        if (!alertwindow) {
+            alertwindow = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
+        }
         alertwindow.rootViewController = [UIViewController new];
         alertwindow.windowLevel = UIWindowLevelAlert;
 
